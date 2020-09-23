@@ -1,0 +1,32 @@
+Type: Component
+Name: scf
+Provider:
+  - Tencent
+Version: 0.0.1
+Description: 腾讯云函数计算组件，可以快速部署腾讯云云函数
+HomePage: https://www.qcloud.com/
+Tags:
+  - 函数计算
+Category: 基础云服务
+Commands:
+  deploy: 部署函数
+  remove: 移除函数
+Service:
+  函数计算:
+    Authorities:
+      - 创建函数
+      - 删除函数
+  API网关:
+    Authorities:
+      - 创建服务
+      - 创建API
+      - 修改服务
+      - 修改API
+      - 删除服务
+      - 删除API
+Properties:
+  Region:
+    Description: 地域
+    Required: true
+    Type:
+      - String

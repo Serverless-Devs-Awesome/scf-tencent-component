@@ -1,0 +1,32 @@
+{
+  "name": "@serverless-devs/scf-tencent",
+  "version": "0.0.1",
+  "description": "Serverless Devs Tool SCF Component For Tencent Cloud",
+  "keywords": [
+    "Serverless",
+    "Framework",
+    "Serverless-Devs",
+    "Serverless-Tool",
+    "Apigateway"
+  ],
+  "homepage": "https://www.serverlessfans.com",
+  "author": "Serverless-Devs",
+  "contributors": [
+    "Shoushuai Wang",
+    "Anycodes"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {
+    "download": "^8.0.0",
+    "@serverless-devs/s-zip": "^0.0.8",
+    "tencent-component-toolkit": "^1.16.4",
+    "@serverless-devs/s-core": "^0.0.3"
+  }
+}
