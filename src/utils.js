@@ -6,6 +6,7 @@ const path = require('path')
 const {packTo} = require('@serverless-devs/s-zip');
 const fse = require('fs-extra')
 
+
 /**
  * Generate random id
  */
@@ -130,10 +131,11 @@ const prepareInputs = async (instance, credentials, appId, inputs) => {
     if (!tempSrc.object) {
         // whether use default template, if so, download it
         // get default template code
+
         let zipPath
         const packToParame = {
             outputFilePath: './.s/cache/',
-            outputFileName: `${inputs.functionName}.zip`
+            outputFileName: `${inputs.name}.zip`
         };
         if (typeof code == 'string') {
             packToParame.codeUri = tempSrc;
@@ -142,8 +144,10 @@ const prepareInputs = async (instance, credentials, appId, inputs) => {
             packToParame.exclude = tempSrc.exclude;
             packToParame.include = tempSrc.include;
         }
+        packToParame.exclude = packToParame.exclude || []
+        packToParame.exclude.push(path.resolve('./.s/'))
         const codeUri = packToParame.codeUri;
-        if (codeUri.endsWith('.s-zip') || codeUri.endsWith('.jar') || codeUri.endsWith('.war')) {
+        if (codeUri.endsWith('.s-zip') || codeUri.endsWith('.jar') || codeUri.endsWith('.war') || codeUri.endsWith('.zip')) {
             const srcPath = path.resolve(codeUri);
             const destPath = path.resolve(cachePath, `${projectName}.zip`);
             if (srcPath !== destPath) {
@@ -155,13 +159,14 @@ const prepareInputs = async (instance, credentials, appId, inputs) => {
                 throw new Error('Zip file error');
             }
         }
-        zipPath = `./.s/cache/${inputs.functionName}.zip`
+        zipPath = `./.s/cache/${inputs.name}.zip`
         console.log(`Uploading code ${code.object} to bucket ${bucket}`)
         await cos.upload({
             bucket: bucket,
             file: zipPath,
             key: code.object
         })
+        console.log(`Uploaded code ${code.object} to bucket ${bucket}`)
     }
 
     const oldState = instance.state

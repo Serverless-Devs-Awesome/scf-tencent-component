@@ -31,9 +31,6 @@ class SCFComponent extends Component {
 
     async deploy(inputs) {
 
-        console.log(this.args2Json(inputs.Args))
-
-
         console.log(`Deploying Tencent ${CONFIGS.compFullname}...`)
 
         const credentials = {
@@ -151,7 +148,8 @@ class SCFComponent extends Component {
             properties.namespace = inputs.Properties.Service.Name
         }
 
-        const region = inputs.region || CONFIGS.region
+        const region = properties.region || CONFIGS.region
+
         const state = this.state
         const args = inputs.Args
 
