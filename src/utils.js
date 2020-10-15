@@ -145,7 +145,7 @@ const prepareInputs = async (instance, credentials, appId, inputs) => {
             packToParame.include = tempSrc.include;
         }
         packToParame.exclude = packToParame.exclude || []
-        packToParame.exclude.push(path.resolve('./.s/'))
+        packToParame.exclude.push('.s')
         const codeUri = packToParame.codeUri;
         if (codeUri.endsWith('.s-zip') || codeUri.endsWith('.jar') || codeUri.endsWith('.war') || codeUri.endsWith('.zip')) {
             const srcPath = path.resolve(codeUri);
@@ -154,6 +154,7 @@ const prepareInputs = async (instance, credentials, appId, inputs) => {
                 await fse.copy(srcPath, destPath);
             }
         } else {
+            console.log(packToParame)
             const test = await packTo(packToParame);
             if (!test.count) {
                 throw new Error('Zip file error');
