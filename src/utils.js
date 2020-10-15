@@ -154,7 +154,6 @@ const prepareInputs = async (instance, credentials, appId, inputs) => {
                 await fse.copy(srcPath, destPath);
             }
         } else {
-            console.log(packToParame)
             const test = await packTo(packToParame);
             if (!test.count) {
                 throw new Error('Zip file error');
