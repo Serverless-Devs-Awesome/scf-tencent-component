@@ -97,23 +97,21 @@ MyFunction:
           Value: value
       Triggers: # 触发器
         -   Type: timer # 定时触发器
-            Name: #触发器名称，默认timer-${name}-${stage}
+            Name: timername#触发器名称，默认timer-${name}-${stage}
             Parameters:
               CronExpression: '*/5 * * * *' # 每5秒触发一次
               Enable: true
               Argument: argument # 额外的参数
         -   Type: apigw # api网关触发器，已有apigw服务，配置触发器
-        	Name: #触发器名称，默认apigw-${name}-${stage}
+        	Name: apigwname#触发器名称，默认apigw-${name}-${stage}
             Parameters:
-              Service:
-                  Name: serverless
-                  Id: service-8dsikiq6
-                  Protocols:
-                    - http
-                  NetTypes:
-                    - OUTER
-                  Description: the serverless service
-                  Environment: release
+              Id: service-8dsikiq6
+              Protocols:
+                - http
+              NetTypes:
+                - OUTER
+              Description: the serverless service
+              Environment: release
               API:
                 - Path: /users
                   Method: POST
@@ -151,19 +149,17 @@ MyFunction:
                     SecretIds:
                       - xxx
         -   Type: apigw # api网关触发器，无apigw服务，自动创建服务
-        	Name:  #触发器名称，默认apigw-${name}-${stage}
+        	Name: apigwname_2 #触发器名称，默认apigw-${name}-${stage}
             Parameters:
-              Service: 
-                  Name: apigw-xxxx
-                  Protocols:
-                    - http
-                  Description: the serverless service
-                  Environment: release
+              Protocols:
+                - http
+              Description: the serverless service
+              Environment: release
               API:
                 - path: /users
                   method: POST
         -   Type: cos # cos触发器
-        	Name:  #触发器名称，默认cos-${name}-${stage}
+        	Name: cosname #触发器名称，默认cos-${name}-${stage}
             Parameters:
               Bucket: cli-appid.cos.ap-beijing.myqcloud.com
               Filter:
@@ -172,7 +168,7 @@ MyFunction:
               Events: 'cos:ObjectCreated:*'
               Enable: true
         -   Type: cmq # CMQ Topic 触发器
-        	Name:  #触发器名称，默认cmq-${name}-${stage}
+        	Name: cmqname #触发器名称，默认cmq-${name}-${stage}
             Parameters:
               Name: test-topic-queue
               Enable: true
@@ -181,7 +177,7 @@ MyFunction:
                 - key1
                 - key2
         -   Type: ckafka # ckafka触发器
-        	Name:   #触发器名称，默认ckafka-${name}-${stage}
+        	Name: ckafkaname  #触发器名称，默认ckafka-${name}-${stage}
             Parameters:
               Name: ckafka-2o10hua5
               Topic: test
@@ -363,21 +359,13 @@ MyFunction:
 
 | 参数名 |  必填|  类型|  参数描述 | 
 | --- |  --- |  --- |  --- | 
-| Service | false | Struct | API网关服务 |
+| Id    |   false    |  String  |  服务的全局唯一 ID，由系统生成                                                          |
+| Protocols    |   true    | <String>List |  服务的前端请求类型，例如 HTTP，HTTPS，HTTP 和 HTTPS。 （http / https）                 |
+| NetTypes     |   false    | <String>List |网络类型列表，用于指定支持的访问类型，INNER 为内网访问，OUTER 为外网访问。             |
+| Description  |   false    |  String  |  用户自定义的服务描述说明                                                               |
+| Environment  |   false    |  String                | 服务要发布的环境的名称，支持三种环境: test（测试）、prepub（预发布）、 release（发布） |
+| Domains |   false    | <Struct>List |    自定义 API 域名，配置参数参考customDomain 参数说明  |
 | API | false | Struct | API详细信息 |
-
-
-其中Service：
-
-| 参数         | 必填 | 参数类型 |     默认值     | 描述                                                                                   |
-| ------------ | :-------: | :------: | :------------: | :------------------------------------------------------------------------------------- |
-| Id    |   false    |  String  |                | 服务的全局唯一 ID，由系统生成                                                          |
-| Protocols    |   true    | <String>List |   `['http']`   | 服务的前端请求类型，例如 HTTP，HTTPS，HTTP 和 HTTPS。 （http / https）                 |
-| Name  |   false    |  String  |                | 用户自定义的服务名称。 如果该参数未传递，则由系统自动生成一个唯一名称                  |
-| NetTypes     |   false    | <String>List |  `['OUTER']`   | 网络类型列表，用于指定支持的访问类型，INNER 为内网访问，OUTER 为外网访问。             |
-| Description  |   false    |  String  |                | 用户自定义的服务描述说明                                                               |
-| Environment  |   false    |  String  |                | 服务要发布的环境的名称，支持三种环境: test（测试）、prepub（预发布）、 release（发布） |
-| Domains |   false    | <Struct>List |      `[]`      | 自定义 API 域名，配置参数参考customDomain 参数说明  |
 
 Domains：
 

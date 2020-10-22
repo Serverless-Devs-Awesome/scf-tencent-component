@@ -29,6 +29,74 @@ class SCFComponent extends Component {
         return properties
     }
 
+    async getApigwProperties(properties) {
+        const tempProperties = {}
+        if (typeof properties == "object") {
+            for (const item in properties) {
+                const tempItem = item.charAt(0).toLowerCase() + item.substring(1)
+                if (typeof properties[item] == "object") {
+                    if (properties[item] instanceof Array) {
+                        const tempArray = []
+                        for (let i = 0; i < properties[item].length; i++) {
+                            tempArray.push(await this.getApigwProperties(properties[item][i]))
+                        }
+                        tempProperties[tempItem] = tempArray
+                    } else {
+                        tempProperties[tempItem] = await this.getApigwProperties(properties[item])
+                    }
+                } else {
+                    tempProperties[tempItem] = properties[item]
+                }
+            }
+            return tempProperties
+        }
+        return properties
+    }
+
+    async getApigwInputs(inputs) {
+        const properties = {}
+        if (inputs.Id) {
+            properties.serviceId = inputs.Id
+        }
+        if (inputs.Name) {
+            properties.serviceName = inputs.Name
+        }
+        if (inputs.Protocols) {
+            properties.protocols = inputs.Protocols
+        }
+        if (inputs.Description) {
+            properties.description = inputs.Description
+        }
+        if (inputs.Environment) {
+            properties.environment = inputs.Environment
+        }
+        if (inputs.NetTypes) {
+            properties.netTypes = inputs.NetTypes
+        }
+        if (inputs.Domains) {
+            properties.customDomain = await this.getApigwProperties(inputs.Domains)
+        }
+        if (inputs.API) {
+            properties.endpoints = []
+            const tempAPI = inputs.API
+            for (let i = 0; i < tempAPI.length; i++) {
+                if (tempAPI[i].Parameters) {
+                    const tempEveApi = tempAPI[i]
+                    for (let k = 0; k < tempEveApi.Parameters.length; k++) {
+                        if (tempEveApi.Parameters[k].Description) {
+                            tempEveApi.Parameters[k].desc = JSON.parse(JSON.stringify(tempEveApi.Parameters[k].Description))
+                            delete tempEveApi.Parameters[k].Description
+                        }
+                    }
+                    tempAPI[i].param = JSON.parse(JSON.stringify(tempEveApi))
+                    delete tempAPI[i].Parameters
+                }
+                properties.endpoints.push(await this.getApigwProperties(tempAPI[i]))
+            }
+        }
+        return properties
+    }
+
     async deploy(inputs) {
 
         console.log(`Deploying Tencent ${CONFIGS.compFullname}...`)
@@ -134,17 +202,18 @@ class SCFComponent extends Component {
                 const tempTrigger = inputs.Properties.Function.Triggers[i]
                 const tempType = tempTrigger.Type
                 const tempAttr = {}
+                tempTrigger.Parameters.ServiceName = tempTrigger.Name
                 tempAttr[tempType] = {
                     name: tempTrigger.Name,
-                    parameters: await this.getProperties(tempTrigger.Parameters)
+                    parameters: tempType == "apigw" ? await this.getApigwInputs(tempTrigger.Parameters) : await this.getProperties(tempTrigger.Parameters)
                 }
                 properties.events.push(tempAttr)
             }
         }
-        if(inputs.Properties.Function.CodeUri){
-          properties.src = await this.getProperties(inputs.Properties.Function.CodeUri)
+        if (inputs.Properties.Function.CodeUri) {
+            properties.src = await this.getProperties(inputs.Properties.Function.CodeUri)
         }
-        if(inputs.Properties.Service && inputs.Properties.Service.Name){
+        if (inputs.Properties.Service && inputs.Properties.Service.Name) {
             properties.namespace = inputs.Properties.Service.Name
         }
 
@@ -153,6 +222,17 @@ class SCFComponent extends Component {
         const state = this.state
         const args = inputs.Args
 
+        // apigateway
+        if (state && state.apigw && properties.events) {
+            for (let i = 0; i < properties.events.length; i++) {
+                if (properties.events[i].apigw) {
+                    if (properties.events[i].apigw.name && state.apigw[properties.events[i].apigw.name]) {
+                        properties.events[i].apigw.serviceId = state.apigw[properties.events[i].apigw.name]
+                    }
+                }
+            }
+        }
+
         // prepare scf inputs parameters
         const {scfInputs, existApigwTrigger, triggers, useDefault} = await prepareInputs(
             this,
@@ -160,6 +240,7 @@ class SCFComponent extends Component {
             appId,
             properties
         )
+
 
         const scf = new Scf(credentials, region)
         const scfOutput = await scf.deploy(scfInputs)

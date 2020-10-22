@@ -2,7 +2,7 @@ Type: Component
 Name: scf
 Provider:
   - Tencent
-Version: 0.0.9
+Version: 0.0.13
 Description: 腾讯云函数计算组件，可以快速部署腾讯云云函数
 HomePage: https://www.qcloud.com/
 Tags:
@@ -65,8 +65,8 @@ Properties:
             Default: ./
             Description: 代码位置
             Type:
-              - String
-              - Struct:
+              - String[简单配置]
+              - Struct[直接对象存储]:
                   Bucket:
                     Required: false
                     Description: function code包的bucket name
@@ -77,7 +77,7 @@ Properties:
                     Description: code zip包的object name
                     Type:
                       - String
-              - Struct:
+              - Struct[通过对象存储部署]:
                   Bucket:
                     Required: false
                     Description: function code包的bucket name
@@ -92,7 +92,7 @@ Properties:
                     Required: false
                     Description: 本地路径
                     Type:
-                      - <String>List
+                      - List<String>
           Handler:
             Required: false
             Default: index.handler
@@ -120,9 +120,18 @@ Properties:
           Environment:
             Required: false
             Description: 环境变量
-            Example: 'key: value'
             Type:
-              - Struct
+              - List<Struct>:
+                  Key:
+                    Required: false
+                    Description: 环境变量Key
+                    Type:
+                      - String
+                  Value:
+                    Required: false
+                    Description: 环境变量Value
+                    Type:
+                      - String
           Description:
             Required: false
             Description: function的简短描述
@@ -267,7 +276,7 @@ Properties:
                     Required: true
                     Description: 参数类型
                     Type:
-                      - Struct[Type[ckafka]]:
+                      - Struct[Ckafka触发器]:
                           Name:
                             Required: true
                             Description: 配置连接的 CKafka 实例，仅支持选择同地域下的实例。
@@ -293,7 +302,7 @@ Properties:
                             Description: 触发器是否启用。默认启用
                             Type:
                               - String
-                      - Struct[Type[cmq]]:
+                      - Struct[CMQ触发器]:
                           Name:
                             Required: true
                             Description: CMQ Topic 主题队列名称
@@ -314,7 +323,7 @@ Properties:
                             Description: 当 filterType 为 1 时表示消息过滤标签，当 filterType 为 2 时表示 Binding Key
                             Type:
                               - String
-                      - Struct[Type[cos]]:
+                      - Struct[COS触发器]:
                           Bucket:
                             Required: true
                             Description: 配置的 COS Bucket，仅支持选择同地域下的 COS 存储桶
@@ -345,7 +354,7 @@ Properties:
                             Description: 触发器是否启用。默认启用
                             Type:
                               - String
-                      - Struct[Type[timer]]:
+                      - Struct[Timer触发器]:
                           CronExpression:
                             Required: true
                             Description: 触发时间，为定时触发器-cron表达式
@@ -361,89 +370,84 @@ Properties:
                             Description: 触发器是否启用。默认启用
                             Type:
                               - String
-                      - Struct[Type[apigw]]:
-                          Service:
-                            Description: API网关服务
+                      - Struct[Apigw触发器]:
+                          Id:
+                            Description: 服务的全局唯一 ID，由系统生成
+                            Required: false
+                            Type:
+                              - String
+                          Name:
+                            Description: 用户自定义的服务名称。 如果该参数未传递，则由系统自动生成一个唯一名称
+                            Required: false
+                            Type:
+                              - String
+                          Protocols:
+                            Description: 服务的前端请求类型，例如 HTTP，HTTPS，HTTP 和 HTTPS。
                             Required: true
                             Type:
-                              - Struct:
-                                  Id:
-                                    Description: 服务的全局唯一 ID，由系统生成
-                                    Required: false
-                                    Type:
-                                      - String
-                                  Name:
-                                    Description: 用户自定义的服务名称。 如果该参数未传递，则由系统自动生成一个唯一名称
-                                    Required: false
-                                    Type:
-                                      - String
-                                  Protocols:
-                                    Description: 服务的前端请求类型，例如 HTTP，HTTPS，HTTP 和 HTTPS。
+                              - Enum:
+                                  - http
+                                  - https
+                          Description:
+                            Description: 用户自定义的服务描述说明
+                            Required: false
+                            Type:
+                              - String
+                          Environment:
+                            Description:  服务要发布的环境的名称，支持三种环境, test（测试）、prepub（预发布）、 release（发布）
+                            Required: false
+                            Type:
+                              - String
+                          NetTypes:
+                            Description: 网络类型列表，用于指定支持的访问类型，INNER 为内网访问，OUTER 为外网访问。
+                            Required: false
+                            Type:
+                              - List<String>
+                          Domains:
+                            Description: 自定义 API 域名，配置参数参考customDomain
+                            Required: false
+                            Type:
+                              - List<Struct>:
+                                  Domain:
+                                    Description: 需要绑定的自定义域名
                                     Required: true
                                     Type:
-                                      - Enum:
-                                          - http
-                                          - https
-                                  Description:
-                                    Description: 用户自定义的服务描述说明
+                                      - String
+                                  CertificateId:
+                                    Description: 自定义域名的证书，如果设置为 https，则为必需。
                                     Required: false
                                     Type:
                                       - String
-                                  Environment:
-                                    Description:  服务要发布的环境的名称，支持三种环境, test（测试）、prepub（预发布）、 release（发布）
+                                  IsDefaultMapping:
+                                    Description: 是否使用默认路径映射。 如果要自定义路径映射，请设为`false`
                                     Required: false
                                     Type:
                                       - String
-                                  NetTypes:
-                                    Description: 网络类型列表，用于指定支持的访问类型，INNER 为内网访问，OUTER 为外网访问。
+                                  PathMappingSet:
+                                    Description: 自定义路径映射, 当 `isDefaultMapping` 为 `false` 时必填，配置参数参考pathMappingSet
                                     Required: false
                                     Type:
-                                      - <String>List
-                                  Domains:
-                                    Description: 自定义 API 域名，配置参数参考customDomain
+                                      - List<Struct>:
+                                          Path:
+                                            Description: 自定义映射路径
+                                            Required: false
+                                            Type:
+                                              - String
+                                          Environment:
+                                            Description: 自定义映射环境
+                                            Required: false
+                                            Type:
+                                              - String
+                                  Protocols:
+                                    Description: 绑定自定义域协议类型，例如 HTTP，HTTPS，HTTP 和 HTTPS，默认与前端协议相同
                                     Required: false
                                     Type:
-                                      - <Struct>List:
-                                          Domain:
-                                            Description: 需要绑定的自定义域名
-                                            Required: true
-                                            Type:
-                                              - String
-                                          CertificateId:
-                                            Description: 自定义域名的证书，如果设置为 https，则为必需。
-                                            Required: false
-                                            Type:
-                                              - String
-                                          IsDefaultMapping:
-                                            Description: 是否使用默认路径映射。 如果要自定义路径映射，请设为`false`
-                                            Required: false
-                                            Type:
-                                              - String
-                                          PathMappingSet:
-                                            Description: 自定义路径映射, 当 `isDefaultMapping` 为 `false` 时必填，配置参数参考pathMappingSet
-                                            Required: false
-                                            Type:
-                                              - <Struct>List:
-                                                  Path:
-                                                    Description: 自定义映射路径
-                                                    Required: false
-                                                    Type:
-                                                      - String
-                                                  Environment:
-                                                    Description: 自定义映射环境
-                                                    Required: false
-                                                    Type:
-                                                      - String
-                                          Protocols:
-                                            Description: 绑定自定义域协议类型，例如 HTTP，HTTPS，HTTP 和 HTTPS，默认与前端协议相同
-                                            Required: false
-                                            Type:
-                                              - String
+                                      - String
                           API:
                             Description: API详细信息
                             Required: false
                             Type:
-                              - <Struct>List:
+                              - List<Struct>:
                                   Path:
                                     Description: API 路径
                                     Required: false
@@ -503,7 +507,7 @@ Properties:
                                     Description: 前端请求参数，配置参数参考param
                                     Required: false
                                     Type:
-                                      - <Struct>List:
+                                      - List<Struct>:
                                           Name:
                                             Description: 请求参数名称
                                             Required: false
@@ -573,7 +577,7 @@ Properties:
                                             Description: 用户自定义的 secretID。当类型为手动时需要。 它可以包含 5 到 50 个字母，数字和下划线。
                                             Required: false
                                             Type:
-                                              - <String>List
+                                              - List<String>
                                   ServiceMockReturnMessage:
                                     Description: Mock 接口类型返回结果，如果 `serviceType` 设置为 `MOCK`，此参数必填
                                     Required: false
