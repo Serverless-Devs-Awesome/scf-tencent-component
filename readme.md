@@ -96,94 +96,94 @@ MyFunction:
         - Key: key
           Value: value
       Triggers: # 触发器
-        -   Type: timer # 定时触发器
-            Name: timername#触发器名称，默认timer-${name}-${stage}
-            Parameters:
-              CronExpression: '*/5 * * * *' # 每5秒触发一次
-              Enable: true
-              Argument: argument # 额外的参数
-        -   Type: apigw # api网关触发器，已有apigw服务，配置触发器
-        	Name: apigwname#触发器名称，默认apigw-${name}-${stage}
-            Parameters:
-              Id: service-8dsikiq6
-              Protocols:
-                - http
-              NetTypes:
-                - OUTER
-              Description: the serverless service
-              Environment: release
-              API:
-                - Path: /users
-                  Method: POST
-                - Path: /test/{abc}/{cde}
-                  Id: api-id
-                  Method: GET
-                  Description: Serverless REST API
-                  EnableCORS: TRUE
-                  ResponseType: HTML
-                  ServiceTimeout: 10
-                  Parameters:
-                    - Name: abc
-                      Position: PATH
-                      Required: 'TRUE'
-                      Type: string
-                      DefaultValue: abc
-                      Description: mytest
-                    - Name: cde
-                      Position: PATH
-                      Required: 'TRUE'
-                      Type: string
-                      DefaultValue: abc
-                      Description: mytest
-                  Function:
-                    IsIntegratedResponse: TRUE
-                    FunctionQualifier: $DEFAUlt
-                  UsagePlan:
-                    UsagePlanId: 1111
-                    UsagePlanName: slscmp
-                    UsagePlanDesc: sls create
-                    MaxRequestNum: 1000
-                  Auth:
-                    ServiceTimeout: 15
-                    SecretName: secret
-                    SecretIds:
+        - Type: timer # 定时触发器
+          Name: timername#触发器名称，默认timer-${name}-${stage}
+          Parameters:
+            CronExpression: '*/5 * * * *' # 每5秒触发一次
+            Enable: true
+            Argument: argument # 额外的参数
+        - Type: apigw # api网关触发器，已有apigw服务，配置触发器
+          Name: apigwname#触发器名称，默认apigw-${name}-${stage}
+          Parameters:
+            Id: service-8dsikiq6
+            Protocols:
+              - http
+            NetTypes:
+              - OUTER
+            Description: the serverless service
+            Environment: release
+            API:
+              - Path: /users
+                Method: POST
+              - Path: /test/{abc}/{cde}
+                Id: api-id
+                Method: GET
+                Description: Serverless REST API
+                EnableCORS: TRUE
+                ResponseType: HTML
+                ServiceTimeout: 10
+                Parameters:
+                  - Name: abc
+                    Position: PATH
+                    Required: 'TRUE'
+                    Type: string
+                    DefaultValue: abc
+                    Description: mytest
+                  - Name: cde
+                    Position: PATH
+                    Required: 'TRUE'
+                    Type: string
+                    DefaultValue: abc
+                    Description: mytest
+                Function:
+                  IsIntegratedResponse: TRUE
+                  FunctionQualifier: $DEFAUlt
+                UsagePlan:
+                  UsagePlanId: 1111
+                  UsagePlanName: slscmp
+                  UsagePlanDesc: sls create
+                  MaxRequestNum: 1000
+                Auth:
+                  ServiceTimeout: 15
+                  SecretName: secret
+                  SecretIds:
                       - xxx
-        -   Type: apigw # api网关触发器，无apigw服务，自动创建服务
-        	Name: apigwname_2 #触发器名称，默认apigw-${name}-${stage}
-            Parameters:
-              Protocols:
-                - http
-              Description: the serverless service
-              Environment: release
-              API:
-                - path: /users
-                  method: POST
-        -   Type: cos # cos触发器
-        	Name: cosname #触发器名称，默认cos-${name}-${stage}
-            Parameters:
-              Bucket: cli-appid.cos.ap-beijing.myqcloud.com
-              Filter:
-                Prefix: filterdir/
-                Suffix: .jpg
-              Events: 'cos:ObjectCreated:*'
-              Enable: true
-        -   Type: cmq # CMQ Topic 触发器
-        	Name: cmqname #触发器名称，默认cmq-${name}-${stage}
-            Parameters:
-              Name: test-topic-queue
-              Enable: true
-              FilterType: 1 # 消息过滤类型，1为标签类型，2为路由匹配类型
-              FilterKey: # 当 filterType 为1时表示消息过滤标签，当 filterType 为2时表示 Binding Key
-                - key1
-                - key2
-        -   Type: ckafka # ckafka触发器
-        	Name: ckafkaname  #触发器名称，默认ckafka-${name}-${stage}
-            Parameters:
-              Name: ckafka-2o10hua5
-              Topic: test
-              MaxMsgNum: 999
-              Offset: latest
-              Enable: true
+        - Type: apigw # api网关触发器，无apigw服务，自动创建服务
+          Name: apigwname_2 #触发器名称，默认apigw-${name}-${stage}
+          Parameters:
+            Protocols:
+              - http
+            Description: the serverless service
+            Environment: release
+            API:
+              - path: /users
+                method: POST
+        - Type: cos # cos触发器
+          Name: cosname #触发器名称，默认cos-${name}-${stage}
+          Parameters:
+            Bucket: cli-appid.cos.ap-beijing.myqcloud.com
+            Filter:
+              Prefix: filterdir/
+              Suffix: .jpg
+            Events: 'cos:ObjectCreated:*'
+            Enable: true
+        - Type: cmq # CMQ Topic 触发器
+          Name: cmqname #触发器名称，默认cmq-${name}-${stage}
+          Parameters:
+            Name: test-topic-queue
+            Enable: true
+            FilterType: 1 # 消息过滤类型，1为标签类型，2为路由匹配类型
+            FilterKey: # 当 filterType 为1时表示消息过滤标签，当 filterType 为2时表示 Binding Key
+              - key1
+              - key2
+        - Type: ckafka # ckafka触发器
+          Name: ckafkaname  #触发器名称，默认ckafka-${name}-${stage}
+          Parameters:
+            Name: ckafka-2o10hua5
+            Topic: test
+            MaxMsgNum: 999
+            Offset: latest
+            Enable: true
 ```
 
 ### 详细使用方法
