@@ -2,7 +2,7 @@ Type: Component
 Name: scf
 Provider:
   - Tencent
-Version: 0.0.14
+Version: 0.0.15
 Description: 腾讯云函数计算组件，可以快速部署腾讯云云函数
 HomePage: https://www.qcloud.com/
 Tags:
@@ -161,7 +161,7 @@ Properties:
             Required: false
             Description: 私有网络配置
             Type:
-              - <Struct>List:
+              - List<Struct>:
                   CfsId:
                     Required: true
                     Description: 文件系统实例的Id
@@ -206,7 +206,7 @@ Properties:
             Required: false
             Description: 层概念
             Type:
-              - <Struct>List:
+              - List<Struct>:
                   Name:
                     Required: true
                     Description: layer名称
@@ -241,7 +241,7 @@ Properties:
             Required: false
             Description: 标签
             Type:
-              - <Struct>List:
+              - List<Struct>:
                   Key:
                     Required: true
                     Description: 标签名
@@ -256,7 +256,7 @@ Properties:
             Required: false
             Description: 触发器
             Type:
-              - <Struct>List:
+              - ListStruct>:
                   Name:
                     Required: true
                     Description: 触发器名称
@@ -317,7 +317,7 @@ Properties:
                             Required: false
                             Description: 消息过滤类型，1 为标签类型，2 为路由匹配类型
                             Type:
-                              - <String>List
+                              - List<String>
                           Enable:
                             Required: false
                             Description: 当 filterType 为 1 时表示消息过滤标签，当 filterType 为 2 时表示 Binding Key
