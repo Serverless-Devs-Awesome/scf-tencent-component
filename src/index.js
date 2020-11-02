@@ -332,7 +332,14 @@ class SCFComponent extends Component {
 
     // eslint-disable-next-line
     async remove(inputs = {}) {
-        const credentials = this.getCredentials()
+        const credentials = {
+            AppId: inputs.Credentials.AccountID,
+            SecretId: inputs.Credentials.SecretID,
+            SecretKey: inputs.Credentials.SecretKey,
+        }
+        // 默认值
+        await this.init()
+
         const {region} = this.state
         const functionInfo = this.state.function
 

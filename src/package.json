@@ -1,6 +1,6 @@
 {
   "name": "@serverless-devs/scf-tencent",
-  "version": "0.0.13",
+  "version": "0.0.16",
   "description": "Serverless Devs Tool SCF Component For Tencent Cloud",
   "keywords": [
     "Serverless",
