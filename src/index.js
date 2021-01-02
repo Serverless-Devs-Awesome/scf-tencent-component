@@ -101,6 +101,9 @@ class SCFComponent extends Component {
 
         console.log(`Deploying Tencent ${CONFIGS.compFullname}...`)
 
+        // 获取密钥信息
+        inputs.Credentials = await this.credentials(inputs)
+
         const credentials = {
             AppId: inputs.Credentials.AccountID,
             SecretId: inputs.Credentials.SecretID,
@@ -332,6 +335,10 @@ class SCFComponent extends Component {
 
     // eslint-disable-next-line
     async remove(inputs = {}) {
+
+        // 获取密钥信息
+        inputs.Credentials = await this.credentials(inputs)
+
         const credentials = {
             AppId: inputs.Credentials.AccountID,
             SecretId: inputs.Credentials.SecretID,
