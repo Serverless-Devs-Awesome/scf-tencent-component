@@ -1,6 +1,6 @@
 {
   "name": "@serverless-devs/scf-tencent",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Serverless Devs Tool SCF Component For Tencent Cloud",
   "keywords": [
     "Serverless",
@@ -9,11 +9,15 @@
     "Serverless-Tool",
     "Apigateway"
   ],
+  "main": "./src/index.js",
   "homepage": "https://www.serverless-devs.com",
   "author": "Serverless-Devs",
   "contributors": [
     "Anycodes"
   ],
+  "scripts": {
+    "publish": "npm install --production"
+  },
   "license": "MIT",
   "publishConfig": {
     "access": "public"
