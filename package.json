@@ -27,9 +27,11 @@
     "url": "https://github.com/Serverless-Devs/scf-tencent"
   },
   "dependencies": {
+    "@serverless-devs/core": "^0.0.61",
+    "@serverless-devs/s-core": "^0.0.28",
+    "tencent-component-toolkit": "^2.5.12",
     "download": "^8.0.0",
-    "@serverless-devs/s-zip": "^0.0.8",
-    "tencent-component-toolkit": "^1.16.4",
-    "@serverless-devs/s-core": "^0.0.3"
+    "type": "^2.0.0",
+    "@serverless-devs/s-zip": "^0.0.8"
   }
 }

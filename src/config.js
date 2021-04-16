@@ -35,9 +35,9 @@ const CONFIGS = {
     return handler
   },
   description(app) {
-    return `This is a function for Serverless Devs Tool`
+    return `This is a function in ${app} application`
   },
-  triggerTypes: ['apigw', 'cos', 'timer', 'cmq', 'ckafka'],
+  triggerTypes: ['apigw', 'cos', 'timer', 'cmq', 'ckafka', 'cls', 'mps', 'clb'],
   defaultApigw: {
     parameters: {
       protocols: ['http', 'https'],
